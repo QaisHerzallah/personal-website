@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Networks Exam Study Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ── Design tokens ── */
+  :root {
+    --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+    --border-radius-md: 6px;
+    --border-radius-lg: 10px;
+
+    /* backgrounds */
+    --color-background-page:      #0f1117;
+    --color-background-primary:   #161b27;
+    --color-background-secondary: #1e2535;
+
+    /* borders */
+    --color-border-primary:   #3a4460;
+    --color-border-secondary: #2a3450;
+    --color-border-tertiary:  #202840;
+
+    /* text */
+    --color-text-primary:   #e2e8f8;
+    --color-text-secondary: #8a9ac0;
+
+    /* semantic colours */
+    --color-background-info:    #162040;
+    --color-text-info:          #7ab3f5;
+    --color-background-success: #0d2218;
+    --color-text-success:       #5dba6e;
+    --color-background-warning: #221a08;
+    --color-text-warning:       #d4953a;
+    --color-background-danger:  #220d0d;
+    --color-text-danger:        #e06060;
+  }
+
+  /* ── Reset ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(--color-background-page); }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--color-text-primary);
+    line-height: 1.7;
+    background: var(--color-background-page);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── Page shell ── */
+  .page-header {
+    background: var(--color-background-primary);
+    border-bottom: 1px solid var(--color-border-secondary);
+    padding: 1.25rem 1.5rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .page-header h1 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    letter-spacing: .02em;
+    margin-bottom: .75rem;
+  }
+
+  .page-header h1 span {
+    color: var(--color-text-info);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 400;
+    margin-left: 8px;
+  }
+
+  .page-main {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem 3rem;
+  }
+
+  /* ── Tabs ── */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 0;
+    padding: 0;
+    border-bottom: none;
+  }
+
+  .tab {
+    padding: 6px 14px;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-border-secondary);
+    background: transparent;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    transition: all .15s;
+    font-family: var(--font-sans);
+  }
+
+  .tab.active {
+    background: var(--color-background-secondary);
+    color: var(--color-text-primary);
+    border-color: var(--color-border-primary);
+  }
+
+  .tab:hover:not(.active) {
+    background: var(--color-background-secondary);
+    color: var(--color-text-primary);
+  }
+
+  /* ── Sections ── */
+  .section { display: none; padding-top: 1.25rem; }
+  .section.active { display: block; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--color-background-primary);
+    border: 1px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: .75rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ── Badges ── */
+  .badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: var(--border-radius-md);
+    font-weight: 500;
+  }
+  .badge-blue   { background: var(--color-background-info);    color: var(--color-text-info); }
+  .badge-green  { background: var(--color-background-success); color: var(--color-text-success); }
+  .badge-amber  { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .badge-red    { background: var(--color-background-danger);  color: var(--color-text-danger); }
+
+  /* ── Tables ── */
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    font-size: 13px;
+    border-collapse: collapse;
+  }
+
+  th {
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--color-border-tertiary);
+  }
+
+  td {
+    padding: 7px 8px;
+    border-bottom: 1px solid var(--color-border-tertiary);
+    vertical-align: top;
+    font-size: 13px;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  /* ── Key-value rows ── */
+  .kv { display: flex; gap: 8px; margin-bottom: 6px; font-size: 13px; }
+  .kv .k { color: var(--color-text-secondary); min-width: 130px; flex-shrink: 0; font-family: var(--font-mono); font-size: 12px; }
+  .kv .v { color: var(--color-text-primary); }
+
+  /* ── Grid ── */
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+
+  /* ── Accent bars ── */
+  .accent-bar {
+    border-left: 3px solid;
+    padding-left: 12px;
+    margin-bottom: .75rem;
+    border-radius: 0;
+  }
+  .accent-blue   { border-color: #378ADD; }
+  .accent-green  { border-color: #639922; }
+  .accent-amber  { border-color: #BA7517; }
+  .accent-red    { border-color: #E24B4A; }
+  .accent-purple { border-color: #7F77DD; }
+  .accent-teal   { border-color: #1D9E75; }
+
+  /* ── Labels ── */
+  .label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  /* ── Mono code ── */
+  .mono {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    background: var(--color-background-secondary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--color-text-info);
+  }
+
+  /* ── Case boxes ── */
+  .case-box {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+
+  .case-box .case-title { font-weight: 600; margin-bottom: 4px; color: var(--color-text-primary); }
+
+  /* ── Steps ── */
+  .step { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; font-size: 13px; }
+
+  .step-num {
+    min-width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--color-background-info);
+    color: var(--color-text-info);
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ── Pros / cons ── */
+  .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px; }
+  .pros { border-left: 3px solid #639922; padding-left: 10px; }
+  .cons { border-left: 3px solid #E24B4A; padding-left: 10px; }
+  .pros .lbl { color: #7dcf52; font-weight: 600; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  .cons .lbl { color: #e07070; font-weight: 600; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+
+  li { margin-left: 14px; margin-bottom: 3px; }
+
+  /* ── SR-only ── */
+  h2.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--color-background-page); }
+  ::-webkit-scrollbar-thumb { background: var(--color-border-primary); border-radius: 3px; }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .pros-cons { grid-template-columns: 1fr; }
+    .page-header { padding: .9rem 1rem .75rem; }
+    .page-main  { padding: 1rem .75rem 3rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Networks Exam Study Guide <span>Al-Hussein Technical University</span></h1>
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<div class="page-main">
+  <div id="content"></div>
+</div>
+
+<h2 class="sr-only">Networking exam study guide covering network types, topologies, devices, and protocols</h2>
+
+<script>
+const tabs=[
+  {id:'p1',label:'P1 — Network Types'},
+  {id:'p2',label:'P2 — Topology & Bandwidth'},
+  {id:'p3',label:'P3 — Devices'},
+  {id:'m1',label:'M1 — Protocols & OSI'},
+];
+
+const sections={
+p1:`
+<div class="card">
+  <div class="card-title">Network types — from smallest to largest <span class="badge badge-blue">PAN → LAN → CAN → MAN → WAN</span></div>
+  <div class="table-wrap"><table>
+    <tr><th>Type</th><th>Full name</th><th>Scale</th><th>Example</th><th>Speed</th><th>Cost</th><th>Complexity</th></tr>
+    <tr><td><b>PAN</b></td><td>Personal Area Network</td><td>1–10 m</td><td>Phone ↔ smartwatch via Bluetooth</td><td>Low</td><td>Cheapest</td><td>Lowest</td></tr>
+    <tr><td><b>LAN</b></td><td>Local Area Network</td><td>Single building</td><td>School computer lab</td><td>Very high (1 Gbps+)</td><td>Low</td><td>Low</td></tr>
+    <tr><td><b>CAN</b></td><td>Campus Area Network</td><td>Campus / multi-building</td><td>University connecting departments</td><td>High</td><td>Medium</td><td>Medium</td></tr>
+    <tr><td><b>MAN</b></td><td>Metropolitan Area Network</td><td>City / metro</td><td>City libraries, municipal offices</td><td>High</td><td>High</td><td>High</td></tr>
+    <tr><td><b>WAN</b></td><td>Wide Area Network</td><td>Countries / global</td><td>The Internet, corporate branches</td><td>Lower (latency)</td><td>Highest</td><td>Highest</td></tr>
+  </table></div>
+</div>
+
+<div class="grid2">
+<div class="card">
+  <div class="card-title">WAN — advantages & disadvantages</div>
+  <div class="pros-cons">
+    <div class="pros"><div class="lbl">Advantages</div>
+      <ul><li>Connects offices/sites across countries</li><li>Enables global communication and resource sharing</li></ul>
+    </div>
+    <div class="cons"><div class="lbl">Disadvantages</div>
+      <ul><li>Most expensive to set up and maintain</li><li>Highest security risk and complexity</li></ul>
+    </div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-title">PAN — advantages & disadvantages</div>
+  <div class="pros-cons">
+    <div class="pros"><div class="lbl">Advantages</div>
+      <ul><li>Very cheap and easy to set up</li><li>Good for personal device sync (phone, earbuds, watch)</li></ul>
+    </div>
+    <div class="cons"><div class="lbl">Disadvantages</div>
+      <ul><li>Extremely short range</li><li>Low data transfer speed</li></ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="grid2">
+<div class="card">
+  <div class="card-title">Peer-to-Peer (P2P)</div>
+  <div class="accent-bar accent-green"><div class="label">How it works</div>Each device connects directly to others — no central server. Every machine can be both client and server.</div>
+  <div class="pros-cons">
+    <div class="pros"><div class="lbl">Advantages</div>
+      <ul><li>Cheap — no server hardware needed</li><li>Easy to set up for small groups</li></ul>
+    </div>
+    <div class="cons"><div class="lbl">Disadvantages</div>
+      <ul><li>Hard to secure and manage</li><li>Doesn't scale well beyond ~10 devices</li></ul>
+    </div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-title">Client-Server</div>
+  <div class="accent-bar accent-blue"><div class="label">How it works</div>All devices connect to a central server that manages resources, authentication, and storage.</div>
+  <div class="pros-cons">
+    <div class="pros"><div class="lbl">Advantages</div>
+      <ul><li>Centralised backups and security</li><li>Scales well for large organisations</li></ul>
+    </div>
+    <div class="cons"><div class="lbl">Disadvantages</div>
+      <ul><li>Server is a single point of failure</li><li>More expensive and complex to set up</li></ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="card">
+  <div class="card-title">Open vs Proprietary protocols</div>
+  <div class="grid2">
+    <div class="accent-bar accent-teal">
+      <div class="label">Open / Standard</div>
+      Defined by organisations like IEEE or IETF. Anyone can implement them. Promotes competition and interoperability between vendors. Example: TCP/IP, HTTP, Ethernet.
+    </div>
+    <div class="accent-bar accent-amber">
+      <div class="label">Proprietary</div>
+      Defined and controlled by a single company. Locks users into one vendor's ecosystem. Can limit interoperability. Example: Cisco proprietary protocols like CDP.
+    </div>
+  </div>
+</div>
+`,
+
+p2:`
+<div class="card">
+  <div class="card-title">Network topologies comparison</div>
+  <div class="table-wrap"><table>
+    <tr><th>Topology</th><th>Structure</th><th>Performance</th><th>Single point of failure?</th><th>Cost</th><th>Collisions</th></tr>
+    <tr><td><b>Star</b></td><td>All nodes → central switch</td><td>High — direct paths</td><td>Yes — the switch</td><td>Medium</td><td>None (switch isolates)</td></tr>
+    <tr><td><b>Bus</b></td><td>All nodes share one backbone cable</td><td>Degrades with more devices</td><td>Yes — the cable</td><td>Lowest</td><td>High — shared medium</td></tr>
+    <tr><td><b>Ring</b></td><td>Each device connects to exactly 2 others in a loop</td><td>Consistent — no collisions (token)</td><td>Yes — one node breaks the ring</td><td>Medium</td><td>None (token-controlled)</td></tr>
+    <tr><td><b>Full Mesh</b></td><td>Every device connects to every other device</td><td>Highest — many redundant paths</td><td>No</td><td>Very high</td><td>None</td></tr>
+    <tr><td><b>Partial Mesh</b></td><td>Some devices have redundant links</td><td>High but less than full mesh</td><td>Depends on design</td><td>High</td><td>Minimal</td></tr>
+  </table></div>
+</div>
+
+<div class="grid2">
+<div class="card">
+  <div class="card-title">Star topology <span class="badge badge-green">Most common LAN</span></div>
+  <ul style="font-size:13px">
+    <li>All nodes connect to one central switch</li>
+    <li>If one cable fails → only that node goes down</li>
+    <li>If the switch fails → entire network goes down</li>
+    <li>Easy to add/remove devices without disruption</li>
+    <li>High performance — switch creates dedicated paths</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-title">Bus topology <span class="badge badge-amber">Legacy</span></div>
+  <ul style="font-size:13px">
+    <li>Single backbone cable shared by all devices</li>
+    <li>Cheapest and simplest to install</li>
+    <li>If the backbone breaks → entire network fails</li>
+    <li>Performance drops as devices are added (collisions)</li>
+    <li>Good for: minimal budget school labs</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-title">Ring topology</div>
+  <ul style="font-size:13px">
+    <li>Data travels in one direction using a token</li>
+    <li>Token = permission to transmit → eliminates collisions</li>
+    <li>One node failure breaks the ring (unless dual-ring)</li>
+    <li>Predictable performance under load</li>
+    <li>Rarely used in modern networks</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-title">Full Mesh topology <span class="badge badge-blue">Max redundancy</span></div>
+  <ul style="font-size:13px">
+    <li>Every device connects to every other device</li>
+    <li>If one path fails → data reroutes automatically</li>
+    <li>No single point of failure</li>
+    <li>Very expensive and complex to cable</li>
+    <li>Used in: data centres, financial trading systems</li>
+  </ul>
+</div>
+</div>
+
+<div class="card">
+  <div class="card-title">Topology scenario justification guide</div>
+  <div class="case-box"><div class="case-title">Scenario A — Financial data centre, zero downtime, low latency</div>→ <b>Full Mesh.</b> No single point of failure. Data always reroutes. Maximum redundancy. Cost is justified.</div>
+  <div class="case-box"><div class="case-title">Scenario B — School lab, 20 PCs, minimal budget, simplest install</div>→ <b>Star</b> (best realistic choice) or <b>Bus</b> (cheapest but risky). Star is far more common in modern labs. Bus has no management overhead but the backbone cable is fragile.</div>
+  <div class="case-box"><div class="case-title">Scenario C — Research lab, sensitive data, centralised management, easy expansion</div>→ <b>Star.</b> Centralised switch = centralised management. Adding new teams = just plug in. Sensitive data stays controlled at the switch level.</div>
+</div>
+
+<div class="card">
+  <div class="card-title">Transmission media</div>
+  <div class="table-wrap"><table>
+    <tr><th>Medium</th><th>Speed</th><th>Distance</th><th>EMI resistance</th><th>Cost</th><th>Key weakness</th></tr>
+    <tr><td><b>Copper (Cat5/Cat6)</b></td><td>Up to 10 Gbps</td><td>~100 m</td><td>Susceptible to EMI</td><td>Cheapest</td><td>EMI interference; limited distance</td></tr>
+    <tr><td><b>Fibre Optic</b></td><td>100+ Gbps</td><td>Kilometres</td><td>Immune to EMI</td><td>Expensive</td><td>Fragile; costly to install</td></tr>
+    <tr><td><b>Wireless (Wi-Fi)</b></td><td>Up to ~9.6 Gbps (Wi-Fi 6)</td><td>Varies</td><td>Signal degrades</td><td>Medium</td><td>Signal degradation; security vulnerabilities</td></tr>
+  </table></div>
+</div>
+
+<div class="card">
+  <div class="card-title">Bandwidth concepts — know these exactly</div>
+  <div class="grid2">
+    <div class="accent-bar accent-blue">
+      <div class="label">Bandwidth</div>
+      The <b>theoretical maximum</b> capacity of a link (e.g. 1 Gbps). It's the "size of the pipe", not how fast water actually flows.
+    </div>
+    <div class="accent-bar accent-teal">
+      <div class="label">Throughput</div>
+      The <b>actual data rate achieved</b> in practice, after subtracting network overhead, interference, and congestion. Always lower than bandwidth.
+    </div>
+    <div class="accent-bar accent-amber">
+      <div class="label">Latency</div>
+      The <b>time delay before data transfer begins</b>. High latency = "lag" in gaming, remote desktop, video calls.
+    </div>
+    <div class="accent-bar accent-red">
+      <div class="label">Jitter</div>
+      The <b>variation in packet delay</b>. If packets arrive at inconsistent intervals, VoIP and video streams stutter and distort.
+    </div>
+    <div class="accent-bar accent-purple">
+      <div class="label">Packet Loss</div>
+      When the network is <b>too congested</b>, packets are simply dropped. The sender must retransmit them, which congests the network further and degrades quality.
+    </div>
+    <div class="accent-bar accent-green">
+      <div class="label">High vs low demand data</div>
+      Emails and basic browsing = low demand. HD video conferencing and 4K streaming = <b>high, sustained bandwidth</b> — insufficient capacity leads to buffering.
+    </div>
+  </div>
+</div>
+`,
+
+p3:`
+<div class="card">
+  <div class="card-title">Networking devices — comparison table</div>
+  <div class="table-wrap"><table>
+    <tr><th>Device</th><th>OSI Layer</th><th>Forwards using</th><th>Duplex</th><th>Scope</th><th>Intelligence</th></tr>
+    <tr><td><b>Hub</b></td><td>Layer 1 — Physical</td><td>Nothing — broadcasts to ALL ports</td><td>Half-duplex</td><td>Single LAN segment</td><td>None ("dumb" device)</td></tr>
+    <tr><td><b>Switch</b></td><td>Layer 2 — Data Link</td><td>MAC address (CAM table)</td><td>Full-duplex</td><td>Single LAN</td><td>Medium</td></tr>
+    <tr><td><b>Router</b></td><td>Layer 3 — Network</td><td>IP address (routing table)</td><td>Full-duplex</td><td>Between different networks</td><td>High</td></tr>
+    <tr><td><b>Server</b></td><td>Layer 7 — Application</td><td>N/A — provides services</td><td>Full-duplex</td><td>Anywhere</td><td>Highest</td></tr>
+  </table></div>
+</div>
+
+<div class="grid2">
+<div class="card">
+  <div class="card-title">Hub <span class="badge badge-amber">Layer 1</span></div>
+  <ul style="font-size:13px">
+    <li>Has <b>no addressing logic at all</b></li>
+    <li>Receives a frame → sends it to every single port</li>
+    <li>This creates unnecessary traffic and collisions</li>
+    <li>Half-duplex: cannot send and receive at the same time</li>
+    <li>Considered obsolete — replaced by switches</li>
+    <li>Think of it as a megaphone: one person talks, everyone hears</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-title">Switch <span class="badge badge-blue">Layer 2</span></div>
+  <ul style="font-size:13px">
+    <li>Builds a MAC address table (CAM table) by learning source MACs</li>
+    <li>Forwards frames only to the correct destination port</li>
+    <li>Full-duplex: send and receive simultaneously</li>
+    <li>Segments collision domains — each port is its own domain</li>
+    <li>Used to build LANs and segment VLANs</li>
+    <li>Think of it as a switchboard operator: routes calls precisely</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-title">Router <span class="badge badge-green">Layer 3</span></div>
+  <ul style="font-size:13px">
+    <li>Connects <b>different networks</b> together</li>
+    <li>Uses IP addresses and a routing table to forward packets</li>
+    <li>When a frame arrives: strips the Layer 2 header, reads the IP, creates a new Layer 2 header for the next hop</li>
+    <li>Maintains routing table via static routes or dynamic protocols (OSPF)</li>
+    <li>Is the default gateway for devices on a LAN</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-title">Server <span class="badge badge-red">Layer 7</span></div>
+  <ul style="font-size:13px">
+    <li>Provides application-layer services: web, email, file, DNS, DHCP</li>
+    <li>Operates at Layer 7 (Application) of the OSI model</li>
+    <li>Clients send requests → server responds with the service</li>
+    <li>Can also perform routing/switching functions depending on the OS</li>
+    <li>Central to Client-Server network architecture</li>
+  </ul>
+</div>
+</div>
+
+<div class="card">
+  <div class="card-title">Switch MAC address table — the 4 exam cases</div>
+  <div style="font-size:13px;margin-bottom:12px">
+    <b>Setup:</b> A Cisco 2960 switch. MAC table already has:<br>
+    <span class="mono">F0/1→AA</span> <span class="mono">F0/2→BB</span> <span class="mono">F0/3→CC</span> <span class="mono">F0/4→DD</span> <span class="mono">F0/5→EE (connected but NOT yet in table — hasn't sent any data)</span>
+  </div>
+
+  <div class="case-box">
+    <div class="case-title">Case 1 — src: AA (F0/1) → dst: CC (F0/3)</div>
+    <div class="step"><div class="step-num">1</div><span>Source AA is already in the table on F0/1 → no update needed</span></div>
+    <div class="step"><div class="step-num">2</div><span>Destination CC is known → it's on F0/3</span></div>
+    <div class="step"><div class="step-num">3</div><span><b>Unicast</b> — frame sent only to F0/3. No other ports receive it.</span></div>
+  </div>
+
+  <div class="case-box">
+    <div class="case-title">Case 2 — src: AA (F0/1) → dst: EE</div>
+    <div class="step"><div class="step-num">1</div><span>Source AA already known → no update</span></div>
+    <div class="step"><div class="step-num">2</div><span>Destination EE is <b>NOT in the MAC table</b> (EE never sent data)</span></div>
+    <div class="step"><div class="step-num">3</div><span><b>Flood</b> — frame sent to all ports <i>except</i> F0/1 (the incoming port). This includes F0/5 where EE is connected.</span></div>
+  </div>
+
+  <div class="case-box">
+    <div class="case-title">Case 3 — src: EE (F0/5) → dst: AA (F0/1)</div>
+    <div class="step"><div class="step-num">1</div><span>Source EE is NOT in the table → switch <b>learns and adds EE on F0/5</b> to the MAC table</span></div>
+    <div class="step"><div class="step-num">2</div><span>Destination AA is known → it's on F0/1</span></div>
+    <div class="step"><div class="step-num">3</div><span><b>Unicast</b> — frame sent only to F0/1. MAC table is now updated with EE.</span></div>
+  </div>
+
+  <div class="case-box">
+    <div class="case-title">Case 4 — src: EE (F0/5) → dst: FF:FF:FF:FF:FF:FF</div>
+    <div class="step"><div class="step-num">1</div><span>Source EE not in table → switch <b>learns and adds EE on F0/5</b></span></div>
+    <div class="step"><div class="step-num">2</div><span>Destination is the broadcast address FF:FF:FF:FF:FF:FF</span></div>
+    <div class="step"><div class="step-num">3</div><span><b>Broadcast</b> — frame sent to <i>all</i> ports except the incoming port F0/5.</span></div>
+  </div>
+
+  <div style="font-size:12px;color:var(--color-text-secondary);margin-top:8px">Key rule: a switch always learns the <b>source</b> MAC. It floods when it doesn't know the <b>destination</b>. It unicasts when it does.</div>
+</div>
+
+<div class="card">
+  <div class="card-title">Cisco CLI — key commands</div>
+  <div class="kv"><span class="k">service password-encryption</span><span class="v">Encrypts all passwords stored in the running config file (not data traffic)</span></div>
+  <div class="kv"><span class="k">enable secret [pass]</span><span class="v">Sets an encrypted privileged EXEC password (MD5) — stronger than "password"</span></div>
+  <div class="kv"><span class="k">enable password [pass]</span><span class="v">Sets a plain-text privileged password — less secure than "secret"</span></div>
+  <div class="kv"><span class="k">show mac address-table</span><span class="v">Displays the switch's current MAC address table</span></div>
+</div>
+`,
+
+m1:`
+<div class="card">
+  <div class="card-title">OSI model vs TCP/IP model</div>
+  <div class="table-wrap"><table>
+    <tr><th>OSI Layer</th><th>Name</th><th>Key function</th><th>TCP/IP equivalent</th><th>PDU</th></tr>
+    <tr><td>7</td><td>Application</td><td>User-facing protocols: HTTP, DNS, FTP, DHCP, SMTP</td><td rowspan="3" style="vertical-align:middle">Application</td><td>Data</td></tr>
+    <tr><td>6</td><td>Presentation</td><td>Encryption, encoding, compression (SSL/TLS)</td><td>Data</td></tr>
+    <tr><td>5</td><td>Session</td><td>Manages communication sessions between hosts</td><td>Data</td></tr>
+    <tr><td>4</td><td>Transport</td><td>TCP/UDP — port numbers, reliability, flow control</td><td>Transport</td><td>Segment</td></tr>
+    <tr><td>3</td><td>Network</td><td>IP addressing, routing, TTL, packet forwarding</td><td>Internet</td><td>Packet</td></tr>
+    <tr><td>2</td><td>Data Link</td><td>MAC addressing, framing, FCS error checking, LLC/MAC sublayers</td><td>Network Access</td><td>Frame</td></tr>
+    <tr><td>1</td><td>Physical</td><td>Electrical/optical/wireless signals — actual bits on the wire</td><td>Network Access</td><td>Bit</td></tr>
+  </table></div>
+  <div style="font-size:12px;color:var(--color-text-secondary);margin-top:8px">Key point: TCP/IP has 4 layers. OSI has 7. OSI layers 5, 6, 7 all map into TCP/IP's single Application layer.</div>
+</div>
+
+<div class="card">
+  <div class="card-title">Layer 2 sublayers — Data Link</div>
+  <div class="grid2">
+    <div class="accent-bar accent-blue">
+      <div class="label">LLC — Logical Link Control</div>
+      Identifies which Network layer protocol is being encapsulated in the frame (e.g. IPv4 or IPv6). Acts as the interface between Layer 2 and Layer 3.
+    </div>
+    <div class="accent-bar accent-teal">
+      <div class="label">MAC — Media Access Control</div>
+      Handles frame delimiting, accessing the media, and MAC addressing. Also responsible for CSMA/CD collision detection on Ethernet.
+    </div>
+  </div>
+  <div class="accent-bar accent-amber" style="margin-top:10px">
+    <div class="label">FCS — Frame Check Sequence</div>
+    A value in the frame trailer used by the receiving device to check if the frame was corrupted during transmission. If the FCS doesn't match → frame is discarded.
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">TCP vs UDP</div>
+  <div class="table-wrap"><table>
+    <tr><th>Feature</th><th>TCP</th><th>UDP</th></tr>
+    <tr><td>Connection type</td><td>Connection-oriented (3-way handshake first)</td><td>Connectionless (no handshake)</td></tr>
+    <tr><td>Reliability</td><td>Guaranteed delivery, retransmits if lost</td><td>Best-effort, no retransmission</td></tr>
+    <tr><td>Order</td><td>Sequence numbers ensure correct order</td><td>No ordering guarantee</td></tr>
+    <tr><td>Speed</td><td>Slower — overhead from acknowledgements</td><td>Faster — minimal overhead</td></tr>
+    <tr><td>Flow control</td><td>Yes — sliding window</td><td>No</td></tr>
+    <tr><td>Use cases</td><td>HTTP, HTTPS, FTP, SMTP, IMAP — anything needing accuracy</td><td>DNS, DHCP, VoIP, video streaming, gaming</td></tr>
+    <tr><td>Shared feature</td><td colspan="2" style="text-align:center">Both use source and destination port numbers</td></tr>
+  </table></div>
+  <div style="font-size:12px;color:var(--color-text-secondary);margin-top:8px">TCP 3-way handshake: SYN → SYN-ACK → ACK. After this, data exchange begins. Session ends with FIN.</div>
+</div>
+
+<div class="card">
+  <div class="card-title">Application protocols — full names, ports, functions</div>
+  <div class="table-wrap"><table>
+    <tr><th>Protocol</th><th>Full name</th><th>Port(s)</th><th>Main function</th></tr>
+    <tr><td><b>HTTP</b></td><td>HyperText Transfer Protocol</td><td>80</td><td>Transfers web pages — unencrypted</td></tr>
+    <tr><td><b>HTTPS</b></td><td>HTTP Secure</td><td>443</td><td>Encrypted web traffic via TLS/SSL</td></tr>
+    <tr><td><b>DNS</b></td><td>Domain Name System</td><td>53</td><td>Resolves domain names (cisco.com) → IP addresses</td></tr>
+    <tr><td><b>FTP</b></td><td>File Transfer Protocol</td><td>20/21</td><td>Transfers files between client and server</td></tr>
+    <tr><td><b>DHCP</b></td><td>Dynamic Host Configuration Protocol</td><td>67/68</td><td>Automatically assigns IP address, subnet mask, default gateway to hosts</td></tr>
+    <tr><td><b>SMTP</b></td><td>Simple Mail Transfer Protocol</td><td>25</td><td>Sends email from client to server / between servers</td></tr>
+    <tr><td><b>IMAP</b></td><td>Internet Message Access Protocol</td><td>143</td><td>Receives/reads email — keeps mail on server</td></tr>
+    <tr><td><b>POP3</b></td><td>Post Office Protocol v3</td><td>110</td><td>Downloads email to client — removes from server</td></tr>
+    <tr><td><b>OSPF</b></td><td>Open Shortest Path First</td><td>—</td><td>Dynamic routing protocol — routers share topology info and calculate best path</td></tr>
+  </table></div>
+</div>
+
+<div class="grid2">
+<div class="card">
+  <div class="card-title">ARP — Address Resolution Protocol</div>
+  <div class="accent-bar accent-teal">
+    <div class="label">What it does</div>
+    Maps a known <b>IP address → unknown MAC address</b> within the same local network. Operates at Layer 2/3 boundary.
+  </div>
+  <div class="step"><div class="step-num">1</div><span>Device knows destination IP but doesn't know its MAC</span></div>
+  <div class="step"><div class="step-num">2</div><span>Sends ARP request as a broadcast: "Who has IP X?"</span></div>
+  <div class="step"><div class="step-num">3</div><span>Device with that IP replies with its MAC address</span></div>
+  <div class="step"><div class="step-num">4</div><span>Requester stores it in its ARP cache (<span class="mono">arp -a</span> to view on Windows)</span></div>
+  <div style="font-size:12px;color:var(--color-text-secondary);margin-top:8px">If destination is on a remote network: device sends ARP for the <b>default gateway's</b> MAC, not the remote host.</div>
+</div>
+<div class="card">
+  <div class="card-title">ICMP — Internet Control Message Protocol</div>
+  <div class="accent-bar accent-purple">
+    <div class="label">Primary role</div>
+    Used for network diagnostics and error reporting. Not used to carry user data.
+  </div>
+  <ul style="font-size:13px">
+    <li>When TTL reaches 0: router discards packet and sends "ICMP Time Exceeded" message back to source</li>
+    <li>When a host is unreachable: ICMP Destination Unreachable is sent</li>
+    <li><span class="mono">ping</span> uses ICMP Echo Request / Echo Reply</li>
+    <li><span class="mono">tracert</span> uses ICMP TTL-exceeded messages to map the route</li>
+  </ul>
+</div>
+</div>
+
+<div class="card">
+  <div class="card-title">IPv4 vs IPv6</div>
+  <div class="table-wrap"><table>
+    <tr><th>Feature</th><th>IPv4</th><th>IPv6</th></tr>
+    <tr><td>Address size</td><td>32 bits</td><td>128 bits</td></tr>
+    <tr><td>Format</td><td>4 decimal octets: 192.168.1.1</td><td>8 groups of hex: 2001:0db8::1</td></tr>
+    <tr><td>Total addresses</td><td>~4.3 billion (2³²)</td><td>~340 undecillion (2¹²⁸)</td></tr>
+    <tr><td>Key limitation</td><td>Address exhaustion — running out</td><td>Complexity of transition</td></tr>
+    <tr><td>NAT needed?</td><td>Yes — to extend addresses</td><td>No — vast address space</td></tr>
+    <tr><td>TTL equivalent</td><td>TTL field in header</td><td>Hop Limit field</td></tr>
+  </table></div>
+</div>
+
+<div class="card">
+  <div class="card-title">TTL — Time to Live</div>
+  <div class="accent-bar accent-red">
+    Every IPv4 packet has a TTL field. Each router that forwards the packet <b>decrements TTL by 1</b>. When TTL reaches 0, the router discards the packet and sends an ICMP Time Exceeded message to the source. This prevents packets from looping endlessly through the network.
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">NAT — Network Address Translation</div>
+  <div style="font-size:13px">NAT allows multiple private IP addresses (inside a LAN) to share one public IP address when communicating on the internet. This was a critical solution to slow down the depletion of public IPv4 addresses. However, it breaks end-to-end connectivity for some applications.</div>
+</div>
+
+<div class="card">
+  <div class="card-title">Subnetting — how many host bits do you need?</div>
+  <div style="font-size:13px;margin-bottom:10px">Formula: 2ⁿ − 2 = usable hosts (subtract 2 for network address and broadcast)</div>
+  <div class="table-wrap"><table>
+    <tr><th>Host bits (n)</th><th>Usable hosts (2ⁿ−2)</th></tr>
+    <tr><td>2 bits</td><td>2</td></tr>
+    <tr><td>3 bits</td><td>6</td></tr>
+    <tr><td>4 bits</td><td>14</td></tr>
+    <tr><td>5 bits</td><td>30</td></tr>
+    <tr><td>6 bits</td><td>62</td></tr>
+  </table></div>
+  <div style="font-size:12px;color:var(--color-text-secondary);margin-top:8px">Example: need 10 usable hosts → need 4 host bits (2⁴−2=14 ≥ 10) → /28 mask</div>
+</div>
+
+<div class="card">
+  <div class="card-title">CSMA/CD — Collision Detection (Ethernet)</div>
+  <div class="step"><div class="step-num">1</div><span>Device listens before transmitting (Carrier Sense)</span></div>
+  <div class="step"><div class="step-num">2</div><span>Multiple devices transmit → collision happens</span></div>
+  <div class="step"><div class="step-num">3</div><span>A <b>Jam signal</b> is detected by all transmitting hosts</span></div>
+  <div class="step"><div class="step-num">4</div><span>All stop transmitting and wait a random backoff time</span></div>
+  <div class="step"><div class="step-num">5</div><span>Retry transmission after the backoff period</span></div>
+  <div style="font-size:12px;color:var(--color-text-secondary);margin-top:6px">Only relevant in half-duplex environments (hubs). Full-duplex switches eliminate collisions.</div>
+</div>
+`
+};
+
+const tabsEl=document.getElementById('tabs');
+const contentEl=document.getElementById('content');
+
+tabs.forEach((t,i)=>{
+  const btn=document.createElement('button');
+  btn.className='tab'+(i===0?' active':'');
+  btn.textContent=t.label;
+  btn.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('sec-'+t.id).classList.add('active');
+  };
+  tabsEl.appendChild(btn);
+
+  const sec=document.createElement('div');
+  sec.className='section'+(i===0?' active':'');
+  sec.id='sec-'+t.id;
+  sec.innerHTML=sections[t.id]||'';
+  contentEl.appendChild(sec);
+});
+</script>
+</body>
+</html>

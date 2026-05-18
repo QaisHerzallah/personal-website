@@ -1,6 +1,0 @@
-{
-  "name": "Ataha Center",
-  "description": "An educational platform for pedagogical courses in Amman, Jordan.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

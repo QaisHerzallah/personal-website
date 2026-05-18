@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Public read for courses and settings
+    match /courses/{courseId} {
+      allow read: if true;
+      // In a real app, this would be isSignedIn() && isAdmin()
+      // For this specific request, we'll allow all writes for now as there's no auth setup
+      allow write: if true;
+    }
+
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}
